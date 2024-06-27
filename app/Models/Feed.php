@@ -31,10 +31,10 @@ class Feed extends Model
         $data = [
             'url' => $url,
             'title' => (string)$feed['channel']['title'],
-            'description' => (string)$feed['channel']['description'],
-            'image' => (string)$feed['channel']['image']['url'],
-            'generator' => (string)$feed['channel']['generator'],
-            'link' => (string)$feed['channel']['link'],
+            'description' => $feed['channel']['description'] ? (string)$feed['channel']['description'] : '',
+            //'image' => $feed['channel']['url'] ?  (string)$feed['channel']['image']['url'] : '',
+            //'generator' => $feed['channel']['generator'] ? (string)$feed['channel']['generator'] : '',
+            'link' => $feed['channel']['link'] ?  (string)$feed['channel']['link'] : '',
             'visible' => true,
         ];
 
