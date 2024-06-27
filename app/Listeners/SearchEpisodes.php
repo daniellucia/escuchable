@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\FeedSaved;
+use App\Models\Episode;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -21,6 +22,6 @@ class SearchEpisodes
      */
     public function handle(FeedSaved $event): void
     {
-        //
+        Episode::obtain($event->feed);
     }
 }

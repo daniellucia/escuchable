@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->integer('feed_id');
             $table->string('title');
-            $table->string('link');
+            $table->string('link')->nullable();
             $table->text('description');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('media_url');
-            $table->integer('duration');
+            $table->integer('duration')->default(0);
+            $table->dateTime('publication_date')->nullable();
             $table->timestamps();
         });
     }
