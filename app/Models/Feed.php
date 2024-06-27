@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\FeedSaved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,8 +33,8 @@ class Feed extends Model
             'url' => $url,
             'title' => (string)$feed['channel']['title'],
             'description' => $feed['channel']['description'] ? (string)$feed['channel']['description'] : '',
-            //'image' => $feed['channel']['url'] ?  (string)$feed['channel']['image']['url'] : '',
-            //'generator' => $feed['channel']['generator'] ? (string)$feed['channel']['generator'] : '',
+            'image' => isset($feed['channel']['url']) ?  (string)$feed['channel']['image']['url'] : '',
+            'generator' => isset($feed['channel']['generator']) ? (string)$feed['channel']['generator'] : '',
             'link' => $feed['channel']['link'] ?  (string)$feed['channel']['link'] : '',
             'visible' => true,
         ];
@@ -42,6 +43,8 @@ class Feed extends Model
             ['url' => $url],
             $data
         );
+
+        event(new FeedSaved($feed));
 
         return $feed;
     }
