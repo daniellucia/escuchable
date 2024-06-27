@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('url')->unique();
-            $table->string('uid')->unique()->default('');
             $table->string('link')->nullable();
             $table->text('description')->nullable();
             $table->string('author')->nullable();
