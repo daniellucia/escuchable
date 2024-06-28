@@ -26,7 +26,8 @@ class FetchFromOpml extends Command
 
         foreach ($xml->body->outline as $item) {
             $url = (string)$item['xmlUrl'];
-            Artisan::call('fetch:feed', ['url' => $url]);
+            Artisan::call("fetch:feed {$url}");
+            $this->info($url);
         }
     }
 }
