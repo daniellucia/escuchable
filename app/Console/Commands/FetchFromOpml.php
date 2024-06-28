@@ -24,6 +24,14 @@ class FetchFromOpml extends Command
         }
 
         $xml = simplexml_load_string(Storage::get($file));
+        $count = count($xml->body->outline);
+
+        if ($count == 0) {
+            $this->error('No feed founds');
+            return;
+        }
+
+        $this->info("{$count} feeds found");
 
         foreach ($xml->body->outline as $item) {
             $url = (string)$item['xmlUrl'];
