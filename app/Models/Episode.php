@@ -28,6 +28,15 @@ class Episode extends Model
         $json = json_encode($xml);
         $items = json_decode($json, true);
 
+        if (!isset($items['channel']['item'])) {
+            return;
+        }
+
+        $count = count($items['channel']['item']);
+        if ($feed->count == $count) {
+            return;
+        }
+
         foreach ($items['channel']['item'] as $item) {
 
             $data = [
@@ -43,7 +52,7 @@ class Episode extends Model
                 continue;
             }
 
-            $episode = self::updateOrCreate(
+            self::updateOrCreate(
                 [
                     'media_url' => $data['media_url'],
                     'feed_id' => $feed->id
@@ -51,5 +60,7 @@ class Episode extends Model
                 $data
             );
         }
+
+        $feed->update(['count' => $count]);
     }
 }

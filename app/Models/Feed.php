@@ -20,6 +20,7 @@ class Feed extends Model
         'language',
         'image',
         'visible',
+        'count',
     ];
 
     public static function obtain(string $url)

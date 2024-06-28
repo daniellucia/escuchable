@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('generator')->nullable();
             $table->boolean('visible')->nullable();
+            $table->integer('count')->default(0);
             $table->timestamps();
         });
     }
