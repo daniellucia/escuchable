@@ -20,6 +20,7 @@ class FetchFromOpml extends Command
 
         if (!Storage::exists($file)) {
             $this->error('File not exists');
+            return;
         }
 
         $xml = simplexml_load_string(Storage::get($file));
