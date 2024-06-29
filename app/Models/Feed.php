@@ -22,6 +22,7 @@ class Feed extends Model
         'image',
         'visible',
         'count',
+        'generator',
     ];
 
     /**
@@ -45,10 +46,11 @@ class Feed extends Model
         $data = [
             'url' => $url,
             'title' => (string)$feed['channel']['title'],
-            'description' => $feed['channel']['description'] ? (string)$feed['channel']['description'] : '',
-            'image' => isset($feed['channel']['url']) ?  (string)$feed['channel']['image']['url'] : '',
+            'language' => isset($feed['channel']['language']) ? (string)$feed['channel']['language'] : '',
+            'description' => isset($feed['channel']['description']) ? (string)$feed['channel']['description'] : '',
+            'image' => isset($feed['channel']['image']['url']) ?  (string)$feed['channel']['image']['url'] : '',
             'generator' => isset($feed['channel']['generator']) ? (string)$feed['channel']['generator'] : '',
-            'link' => $feed['channel']['link'] ?  (string)$feed['channel']['link'] : '',
+            'link' => isset($feed['channel']['image']['link']) ?  (string)$feed['channel']['image']['link'] : '',
             'visible' => true,
         ];
 
