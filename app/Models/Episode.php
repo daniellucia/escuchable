@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Episode extends Model
 {
-    use HasFactory;
+    use HasFactory, Sluggable;
 
     protected $fillable = [
         'feed_id',
@@ -20,6 +21,17 @@ class Episode extends Model
         'duration',
         'publication_date'
     ];
+
+    /**
+     * @return array
+     */
+    public function sluggable(): array {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
 
     public static function obtain(Feed $feed)
     {

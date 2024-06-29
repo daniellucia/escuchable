@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('feeds', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->nullable()->unique();
             $table->string('url')->unique();
             $table->string('link')->nullable();
             $table->text('description')->nullable();

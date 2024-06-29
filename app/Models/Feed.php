@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Events\FeedSaved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Feed extends Model
 {
-    use HasFactory;
+    use HasFactory, Sluggable;
 
     protected $fillable = [
         'title',
@@ -22,6 +23,17 @@ class Feed extends Model
         'visible',
         'count',
     ];
+
+    /**
+     * @return array
+     */
+    public function sluggable(): array {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
 
     public static function obtain(string $url)
     {

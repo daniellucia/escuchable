@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('feed_id');
             $table->string('title');
+            $table->string('slug')->nullable()->unique();
             $table->string('link')->nullable();
             $table->text('description');
             $table->string('image')->nullable();
