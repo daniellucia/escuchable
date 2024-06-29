@@ -43,6 +43,11 @@ class Feed extends Model
         $json = json_encode($xml);
         $feed = json_decode($json, true);
 
+        $category = isset($feed['channel']['itunes:category']) ? (string)$feed['channel']['itunes:category'] : false;
+        if ($category) {
+            $category = Category::obtain($category);
+        }
+
         $data = [
             'url' => $url,
             'title' => (string)$feed['channel']['title'],
@@ -52,6 +57,7 @@ class Feed extends Model
             'generator' => isset($feed['channel']['generator']) ? (string)$feed['channel']['generator'] : '',
             'link' => isset($feed['channel']['image']['link']) ?  (string)$feed['channel']['image']['link'] : '',
             'visible' => true,
+            //'category_id' => $category->id ?? 0,
         ];
 
         $feed = Feed::updateOrCreate(
