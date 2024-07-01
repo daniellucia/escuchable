@@ -110,7 +110,7 @@ class Feed extends Model
                 'feed_id' => $this->id,
                 'title' => (string)$item['title'],
                 'subtitle' => $subtitle == '0' ? '' : $subtitle,
-                'description' => isset($item['description']) ? (string)$item['description'] : '',
+                'description' => strip_tags(isset($item['description']) ? (string)$item['description'] : ''),
                 'publication_date' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => isset($item['enclosure']['@attributes']['length']) ? (string)$item['enclosure']['@attributes']['length'] : 0,
