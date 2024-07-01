@@ -28,12 +28,14 @@ class Feed extends Model
         'visible',
         'count',
         'generator',
+        'last_episode'
     ];
 
     /**
      * @return array
      */
-    public function sluggable(): array {
+    public function sluggable(): array
+    {
         return [
             'slug' => [
                 'source' => 'title'
@@ -110,7 +112,7 @@ class Feed extends Model
                 continue;
             }
 
-            Episode::updateOrCreate(
+            $episode = Episode::updateOrCreate(
                 [
                     'media_url' => $data['media_url'],
                     'feed_id' => $this->id
@@ -119,7 +121,19 @@ class Feed extends Model
             );
         }
 
-        $this->update(['count' => $count]);
+        //Obtenemos el episodio mas nuevo
+        $last_episode = null;
+        $feed = Episode::where('feed_id', $this->id)->orderBy('publication_date', 'desc')->first();
+        if ($feed) {
+            $last_episode = $feed->publication_date;
+        }
+
+        $this->update(
+            [
+                'count' => $count,
+                'last_episode' => $last_episode
+            ]
+        );
 
         return $count;
     }

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('generator')->nullable();
             $table->boolean('visible')->nullable();
             $table->integer('count')->default(0);
+            $table->datetime('last_episode')->nullable();
             $table->timestamps();
         });
     }
