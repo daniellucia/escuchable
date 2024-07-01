@@ -83,9 +83,7 @@ class Feed extends Model
     public function get_new_episodes(): int
     {
 
-        $xml = simplexml_load_file($this->url, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        $items = json_decode($json, true);
+        $items = \array_from_xml($this->url);
 
         if (!isset($items['channel']['item'])) {
             return 0;
