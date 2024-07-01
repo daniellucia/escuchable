@@ -23,8 +23,13 @@ class FetchFromOpml extends Command
             return;
         }
 
-        $xml = simplexml_load_string(Storage::get($file));
-        $count = count($xml->body->outline);
+        $xml = array_from_opml($file);
+
+        $feeds = $xml['body']['outline'];
+        if (isset($xml['body']['outline']['outline'])) {
+            $feeds = $xml['body']['outline']['outline'];
+        }
+        $count = count($feeds);
 
         if ($count == 0) {
             $this->error('No feed founds');
@@ -33,9 +38,14 @@ class FetchFromOpml extends Command
 
         $this->info("{$count} feeds found");
 
-        foreach ($xml->body->outline as $item) {
-            $url = (string)$item['xmlUrl'];
-            Artisan::call("fetch:feed {$url}");
+        foreach ($feeds as $item) {
+            $url = (string)$item['@attributes']['xmlUrl'];
+            try {
+                Feed::obtain($url);
+                $this->info("Podcast feed fetched and stored successfully from {$url}");
+            } catch (\Exception $e) {
+                $this->error('Failed to fetch podcast feed: ' . $e->getMessage());
+            }
             $this->info($url);
         }
     }

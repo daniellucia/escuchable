@@ -1,6 +1,6 @@
 <?php
 
-use Jackiedo\XmlArray\Xml2Array;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('array_from_xml')) {
     /**
@@ -12,12 +12,9 @@ if (!function_exists('array_from_xml')) {
      */
     function array_from_xml(string $url): array
     {
-        $xml = file_get_contents($url);
-        if (!is_valid_xml($xml)) {
-            return [];
-        }
-
-        return Xml2Array::convert($xml)->toArray();
+        $xml = simplexml_load_file($url, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        return json_decode($json, true);
     }
 }
 
@@ -46,5 +43,20 @@ if (!function_exists('is_valid_xml')) {
         }
 
         return false;
+    }
+}
+
+
+if (!function_exists('array_from_opml')) {
+    /**
+     * Función que convierte un archivo OPML en un array
+     *
+     * @param string $file
+     * @return array
+     */
+    function array_from_opml(string $file): array
+    {
+        $xml = simplexml_load_string(Storage::get($file));
+        return json_decode(json_encode($xml), true);
     }
 }
