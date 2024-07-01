@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('episodes', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->integer('feed_id');
-            $table->string('title');
+            $table->string('name');
             $table->string('slug')->nullable()->unique();
-            $table->string('link')->nullable();
-            $table->text('description');
+            $table->string('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('media_url');
-            $table->integer('duration')->default(0);
-            $table->dateTime('publication_date')->nullable();
+            $table->boolean('visible')->default(true);
+            $table->integer('count')->default(0);
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('episodes');
+        Schema::dropIfExists('categories');
     }
 };

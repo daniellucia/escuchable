@@ -6,10 +6,12 @@ use App\Events\FeedSaved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Cviebrock\EloquentSluggable\Sluggable;
+
 
 class Feed extends Model
 {
-    use HasFactory;
+    use HasFactory, Sluggable;
 
     protected $fillable = [
         'title',
@@ -22,7 +24,19 @@ class Feed extends Model
         'image',
         'visible',
         'count',
+        'generator',
     ];
+
+    /**
+     * @return array
+     */
+    public function sluggable(): array {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
 
     public static function obtain(string $url)
     {
@@ -31,14 +45,21 @@ class Feed extends Model
         $json = json_encode($xml);
         $feed = json_decode($json, true);
 
+        $category = isset($feed['channel']['itunes:category']) ? (string)$feed['channel']['itunes:category'] : false;
+        if ($category) {
+            $category = Category::obtain($category);
+        }
+
         $data = [
             'url' => $url,
             'title' => (string)$feed['channel']['title'],
-            'description' => $feed['channel']['description'] ? (string)$feed['channel']['description'] : '',
-            'image' => isset($feed['channel']['url']) ?  (string)$feed['channel']['image']['url'] : '',
+            'language' => isset($feed['channel']['language']) ? (string)$feed['channel']['language'] : '',
+            'description' => isset($feed['channel']['description']) ? (string)$feed['channel']['description'] : '',
+            'image' => isset($feed['channel']['image']['url']) ?  (string)$feed['channel']['image']['url'] : '',
             'generator' => isset($feed['channel']['generator']) ? (string)$feed['channel']['generator'] : '',
-            'link' => $feed['channel']['link'] ?  (string)$feed['channel']['link'] : '',
+            'link' => isset($feed['channel']['image']['link']) ?  (string)$feed['channel']['image']['link'] : '',
             'visible' => true,
+            //'category_id' => $category->id ?? 0,
         ];
 
         $feed = Feed::updateOrCreate(

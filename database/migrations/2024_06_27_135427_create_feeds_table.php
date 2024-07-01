@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('feeds', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->nullable()->unique();
             $table->string('url')->unique();
             $table->string('link')->nullable();
             $table->text('description')->nullable();
             $table->string('author')->nullable();
-            $table->integer('category_id')->nullable();
+            $table->integer('category_id')->default(0);
             $table->string('language')->nullable();
             $table->string('image')->nullable();
             $table->string('generator')->nullable();
