@@ -43,9 +43,7 @@ class Feed extends Model
     public static function obtain(string $url)
     {
 
-        $xml = simplexml_load_file($url, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        $feed = json_decode($json, true);
+        $feed = \array_from_xml($url);
 
         $category = isset($feed['channel']['itunes:category']) ? (string)$feed['channel']['itunes:category'] : false;
 
