@@ -20,6 +20,7 @@ class Feed extends Model
         'description',
         'author',
         'category_id',
+        'author_id',
         'language',
         'image',
         'visible',
@@ -46,8 +47,14 @@ class Feed extends Model
         $feed = json_decode($json, true);
 
         $category = isset($feed['channel']['itunes:category']) ? (string)$feed['channel']['itunes:category'] : false;
+
         if ($category) {
             $category = Category::obtain($category);
+        }
+
+        $author = isset($feed['channel']['author']) ? (string)$feed['channel']['author'] : false;
+        if ($author) {
+            $author = Author::obtain($author);
         }
 
         $data = [
@@ -59,7 +66,8 @@ class Feed extends Model
             'generator' => isset($feed['channel']['generator']) ? (string)$feed['channel']['generator'] : '',
             'link' => isset($feed['channel']['image']['link']) ?  (string)$feed['channel']['image']['link'] : '',
             'visible' => true,
-            //'category_id' => $category->id ?? 0,
+            'category_id' => $category->id ?? 0,
+            'author_id' => $author->id ?? 0,
         ];
 
         $feed = Feed::updateOrCreate(

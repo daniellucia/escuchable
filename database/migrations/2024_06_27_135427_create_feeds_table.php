@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('url')->unique();
             $table->string('link')->nullable();
             $table->text('description')->nullable();
-            $table->string('author')->nullable();
             $table->integer('category_id')->default(0);
+            $table->integer('author_id')->default(0);
             $table->string('language')->nullable();
             $table->string('image')->nullable();
             $table->string('generator')->nullable();
