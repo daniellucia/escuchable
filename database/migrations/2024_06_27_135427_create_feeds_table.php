@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->nullable()->unique();
             $table->string('url')->unique();
             $table->string('link')->nullable();
+            $table->string('copyright')->nullable();
             $table->text('description')->nullable();
             $table->integer('category_id')->default(0);
             $table->integer('author_id')->default(0);
