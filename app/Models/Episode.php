@@ -16,6 +16,7 @@ class Episode extends Model
         'title',
         'link',
         'description',
+        'subtitle',
         'image',
         'media_url',
         'duration',

@@ -48,26 +48,25 @@ class Feed extends Model
 
         $feed = \array_from_xml($url);
 
-        $category = isset($feed['channel']['itunes:category']) ? (string)$feed['channel']['itunes:category'] : false;
-
+        $category = isset($feed['rss']['channel']['itunes:category']) ? (string)$feed['rss']['channel']['itunes:category']['@attributes']['text'] : false;
         if ($category) {
             $category = Category::obtain($category);
         }
 
-        $author = isset($feed['channel']['author']) ? (string)$feed['channel']['author'] : false;
+        $author = isset($feed['rss']['channel']['author']) ? (string)$feed['rss']['channel']['author'] : false;
         if ($author) {
             $author = Author::obtain($author);
         }
 
         $data = [
             'url' => $url,
-            'title' => (string)$feed['channel']['title'],
-            'language' => isset($feed['channel']['language']) ? (string)$feed['channel']['language'] : '',
-            'copyright' => isset($feed['channel']['copyright']) ? (string)$feed['channel']['copyright'] : '',
-            'description' => isset($feed['channel']['description']) ? (string)$feed['channel']['description'] : '',
-            'image' => isset($feed['channel']['image']['url']) ?  (string)$feed['channel']['image']['url'] : '',
-            'generator' => isset($feed['channel']['generator']) ? (string)$feed['channel']['generator'] : '',
-            'link' => isset($feed['channel']['image']['link']) ?  (string)$feed['channel']['image']['link'] : '',
+            'title' => (string)$feed['rss']['channel']['title'],
+            'language' => isset($feed['rss']['channel']['language']) ? (string)$feed['rss']['channel']['language'] : '',
+            'copyright' => isset($feed['rss']['channel']['copyright']) ? (string)$feed['rss']['channel']['copyright'] : '',
+            'description' => isset($feed['rss']['channel']['description']) ? (string)$feed['rss']['channel']['description'] : '',
+            'image' => isset($feed['rss']['channel']['image']['url']) ?  (string)$feed['rss']['channel']['image']['url'] : '',
+            'generator' => isset($feed['rss']['channel']['generator']) ? (string)$feed['rss']['channel']['generator'] : '',
+            'link' => isset($feed['rss']['channel']['image']['link']) ?  (string)$feed['rss']['channel']['image']['link'] : '',
             'visible' => true,
             'category_id' => $category->id ?? 0,
             'author_id' => $author->id ?? 0,
@@ -88,20 +87,23 @@ class Feed extends Model
 
         $items = \array_from_xml($this->url);
 
-        if (!isset($items['channel']['item'])) {
+        if (!isset($items['rss']['channel']['item'])) {
             return 0;
         }
 
-        $count = count($items['channel']['item']);
+        $count = count($items['rss']['channel']['item']);
         if ($this->count == $count) {
             return 0;
         }
 
-        foreach ($items['channel']['item'] as $item) {
+        foreach ($items['rss']['channel']['item'] as $item) {
+
+            $subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
 
             $data = [
                 'feed_id' => $this->id,
                 'title' => (string)$item['title'],
+                'subtitle' => $subtitle,
                 'description' => isset($item['description']) ? (string)$item['description'] : '',
                 'publication_date' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',

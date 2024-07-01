@@ -29,8 +29,12 @@ class SearchEpisodeFromFeed extends Command
         $url = $this->argument('url');
         try {
             $feed = Feed::where('url', $url)->first();
-            $count = $feed->get_new_episodes();
-            $this->info("{$count} found");
+            if ($feed) {
+                $count = $feed->get_new_episodes();
+                $this->info("{$count} found");
+            } else {
+                $this->error('Feed not found');
+            }
         } catch (\Exception $e) {
             $this->error('Failed to fetch podcast feed: ' . $e->getMessage());
         }

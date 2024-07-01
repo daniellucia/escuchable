@@ -1,5 +1,7 @@
 <?php
 
+use Jackiedo\XmlArray\Xml2Array;
+
 if (!function_exists('array_from_xml')) {
     /**
      * Obtiene un xml remoto y lo retorna como
@@ -10,8 +12,7 @@ if (!function_exists('array_from_xml')) {
      */
     function array_from_xml(string $url): array
     {
-        $xml = simplexml_load_file($url, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        return json_decode($json, true);
+        $xml = file_get_contents($url);
+        return Xml2Array::convert($xml)->toArray();
     }
 }
