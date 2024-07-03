@@ -28,6 +28,8 @@ return new class extends Migration
             $table->integer('count')->default(0);
             $table->datetime('last_episode')->nullable();
             $table->timestamps();
+
+            $table->fullText(['title', 'description']);
         });
     }
 
@@ -36,6 +38,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('feeds', function($table) {
+            $table->dropFullText(['title', 'description']);
+        });
+
         Schema::dropIfExists('feeds');
     }
 };

@@ -11,7 +11,10 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "overtrue/laravel-favorite": "^5.2",
-        "overtrue/laravel-follow": "^5.2"
+        "overtrue/laravel-follow": "^5.2",
+        "symfony/dom-crawler": "^7.1",
+        "tymon/jwt-auth": "2.1.1",
+        "voku/portable-utf8": "^6.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

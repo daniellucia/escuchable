@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Overtrue\LaravelFollow\Traits\Followable;
-
+use voku\helper\UTF8;
 
 class Feed extends Model
 {
@@ -65,10 +65,10 @@ class Feed extends Model
 
         $data = [
             'url' => $url,
-            'title' => (string)$channel['title'],
+            'title' => UTF8::fix_utf8((string)$channel['title']),
             'language' => isset($channel['language']) ? (string)$channel['language'] : '',
             'copyright' => isset($channel['copyright']) ? (string)$channel['copyright'] : '',
-            'description' => isset($channel['description']) ? (string)$channel['description'] : '',
+            'description' => UTF8::fix_utf8(isset($channel['description']) ? (string)$channel['description'] : ''),
             'image' => isset($channel['image']['url']) ?  (string)$channel['image']['url'] : '',
             'generator' => isset($channel['generator']) ? (string)$channel['generator'] : '',
             'link' => isset($channel['image']['link']) ?  (string)$channel['image']['link'] : '',
@@ -90,6 +90,8 @@ class Feed extends Model
     public function get_new_episodes(): int
     {
 
+        dump($this->url);
+
         $items = \array_from_xml($this->url);
         $channel = $items['channel'];
 
@@ -102,15 +104,20 @@ class Feed extends Model
             return 0;
         }
 
+        if (isset($channel['title'])) {
+            $channel['item'] = [];
+            $channel['item'][] = $channel;
+        }
+
         foreach ($channel['item'] as $item) {
 
             $subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
 
             $data = [
                 'feed_id' => $this->id,
-                'title' => (string)$item['title'],
-                'subtitle' => $subtitle == '0' ? '' : $subtitle,
-                'description' => strip_tags(isset($item['description']) ? (string)$item['description'] : ''),
+                'title' => UTF8::fix_utf8((string)$item['title']),
+                'subtitle' => UTF8::fix_utf8($subtitle == '0' ? '' : $subtitle),
+                'description' => UTF8::fix_utf8(strip_tags(isset($item['description']) ? (string)$item['description'] : '')),
                 'publication_date' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => (int)isset($item['enclosure']['@attributes']['length']) ? (string)$item['enclosure']['@attributes']['length'] : 0,
@@ -144,5 +151,10 @@ class Feed extends Model
         );
 
         return $count;
+    }
+
+    public function episodes()
+    {
+        return $this->hasMany(Episode::class)->orderBy('publication_date', 'desc');
     }
 }

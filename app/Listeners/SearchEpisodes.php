@@ -8,7 +8,7 @@ use App\Models\Feed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SearchEpisodes implements ShouldQueue
+class SearchEpisodes
 {
     public string $connection = 'database';
     public string $queue = 'listeners';
