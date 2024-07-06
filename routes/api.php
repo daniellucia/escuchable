@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\EpisodeController;
 use App\Http\Controllers\Api\FeedController;
+use App\Http\Controllers\Api\FollowedController;
 use App\Http\Controllers\Api\FollowFeedController;
 use App\Http\Controllers\Api\LikeEpisodeController;
 use Illuminate\Http\Request;
@@ -49,6 +50,7 @@ Route::middleware('auth:api')->group(function () {
      * @method "GET"
      */
     Route::get('/search', SearchController::class)->name('search');
+    Route::post('/search', SearchController::class)->name('search');
 
     /**
      * route "/feed"
@@ -85,4 +87,10 @@ Route::middleware('auth:api')->group(function () {
      * @method "GET"
      */
     Route::get('/new-releases', NewReleasesController::class)->name('playlist');
+
+    /**
+     * route "/followed"
+     * @method "GET"
+     */
+    Route::get('/followed', FollowedController::class)->name('followed');
 });

@@ -78,6 +78,11 @@ class User extends Authenticatable implements JWTSubject
         return $episodes;
     }
 
+    public function followed()
+    {
+        return $this->followings()->with('followable')->get();
+    }
+
     /**
      * Retorna la playlist del usuario
      *
