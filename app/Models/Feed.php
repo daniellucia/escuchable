@@ -90,8 +90,6 @@ class Feed extends Model
     public function get_new_episodes(): int
     {
 
-        dump($this->url);
-
         $items = \array_from_xml($this->url);
         $channel = $items['channel'];
 
@@ -118,7 +116,7 @@ class Feed extends Model
                 'title' => UTF8::fix_utf8((string)$item['title']),
                 'subtitle' => UTF8::fix_utf8($subtitle == '0' ? '' : $subtitle),
                 'description' => UTF8::fix_utf8(strip_tags(isset($item['description']) ? (string)$item['description'] : '')),
-                'publication_date' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
+                'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => (int)isset($item['enclosure']['@attributes']['length']) ? (string)$item['enclosure']['@attributes']['length'] : 0,
             ];
@@ -138,9 +136,9 @@ class Feed extends Model
 
         //Obtenemos el episodio mas nuevo
         $last_episode = null;
-        $feed = Episode::where('feed_id', $this->id)->orderBy('publication_date', 'desc')->first();
+        $feed = Episode::where('feed_id', $this->id)->orderBy('published_at', 'desc')->first();
         if ($feed) {
-            $last_episode = $feed->publication_date;
+            $last_episode = $feed->published_at;
         }
 
         $this->update(
@@ -155,6 +153,6 @@ class Feed extends Model
 
     public function episodes()
     {
-        return $this->hasMany(Episode::class)->orderBy('publication_date', 'desc');
+        return $this->hasMany(Episode::class)->orderBy('published_at', 'desc');
     }
 }

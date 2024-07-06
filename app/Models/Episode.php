@@ -20,7 +20,7 @@ class Episode extends Model
         'image',
         'media_url',
         'duration',
-        'publication_date'
+        'published_at'
     ];
 
 

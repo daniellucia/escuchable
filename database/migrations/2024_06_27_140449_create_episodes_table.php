@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('media_url');
             $table->integer('duration')->default(0);
-            $table->dateTime('publication_date')->nullable();
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
     }

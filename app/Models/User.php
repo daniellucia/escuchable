@@ -68,6 +68,16 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function new_releases()
+    {
+        foreach ($this->followings()->with('followable')->get() as $following) {
+            $feeds[] = $following->followable->id;
+        }
+
+        $episodes = Episode::whereIn('feed_id', $feeds)->orderBy('published_at', 'desc')->limit(30)->get();
+        return $episodes;
+    }
+
     /**
      * Retorna la playlist del usuario
      *

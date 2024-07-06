@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\NewReleasesController;
 use App\Http\Controllers\Api\PlaylistController;
 use App\Http\Controllers\Api\SearchController;
 
@@ -78,4 +79,10 @@ Route::middleware('auth:api')->group(function () {
      * @method "POST"
      */
     Route::post('/playlist', PlaylistController::class)->name('playlist');
+
+    /**
+     * route "/playlist"
+     * @method "GET"
+     */
+    Route::get('/new-releases', NewReleasesController::class)->name('playlist');
 });
