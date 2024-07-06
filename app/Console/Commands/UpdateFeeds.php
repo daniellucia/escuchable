@@ -14,7 +14,7 @@ class UpdateFeeds extends Command
      *
      * @var string
      */
-    protected $signature = 'update:episodes';
+    protected $signature = 'update:episodes {limit?}';
 
     /**
      * The console command description.
@@ -28,8 +28,10 @@ class UpdateFeeds extends Command
      */
     public function handle()
     {
+        $limit = $this->argument('limit') ?? 100;
+
         $start = microtime(true);
-        $feeds = Feed::where('updated_at', '<', Carbon::now()->subHours(6)->toDateTimeString())->limit(100)->get();
+        $feeds = Feed::where('updated_at', '<', Carbon::now()->subHours(6)->toDateTimeString())->limit($limit)->get();
         $bar = $this->output->createProgressBar(count($feeds));
         $bar->start();
         foreach ($feeds as $feed) {
