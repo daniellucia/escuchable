@@ -10,11 +10,17 @@ if (!function_exists('array_from_xml')) {
      * @param string $url
      * @author Daniel Lucia <daniellucia84@gmail.com>
      */
-    function array_from_xml(string $url): array
+    function array_from_xml(string $url)
     {
-        $xml = simplexml_load_file($url, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        return json_decode($json, true);
+
+        try {
+            $xml = simplexml_load_file($url, "SimpleXMLElement", LIBXML_NOCDATA);
+            $json = json_encode($xml);
+            return json_decode($json, true);
+        } catch (\Exception $e) {
+            return false;
+        }
+
     }
 }
 

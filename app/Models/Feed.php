@@ -48,6 +48,11 @@ class Feed extends Model
 
         $feed = \array_from_xml($url);
 
+        if ($feed === false) {
+            self::where('url', $url)->update(['not_update' => true]);
+            return false;
+        }
+
         if (empty($feed)) {
             throw new \Exception('Invalid feed');
         }
@@ -91,6 +96,13 @@ class Feed extends Model
     {
 
         $items = \array_from_xml($this->url);
+        if ($items === false) {
+            $this->not_update = true;
+            $this->save();
+
+            return false;
+        }
+
         $channel = $items['channel'];
 
         if (!isset($channel['item'])) {

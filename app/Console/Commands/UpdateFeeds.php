@@ -31,7 +31,7 @@ class UpdateFeeds extends Command
         $limit = $this->argument('limit') ?? 100;
 
         $start = microtime(true);
-        $feeds = Feed::where('updated_at', '<', Carbon::now()->subHours(6)->toDateTimeString())->limit($limit)->get();
+        $feeds = Feed::where('updated_at', '<', Carbon::now()->subHours(6)->toDateTimeString())->where('not_update', false)->limit($limit)->get();
         $bar = $this->output->createProgressBar(count($feeds));
         $bar->start();
         foreach ($feeds as $feed) {
