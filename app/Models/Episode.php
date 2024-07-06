@@ -27,7 +27,8 @@ class Episode extends Model
     /**
      * @return array
      */
-    public function sluggable(): array {
+    public function sluggable(): array
+    {
         return [
             'slug' => [
                 'source' => 'title'
@@ -35,4 +36,17 @@ class Episode extends Model
         ];
     }
 
+    public function feed()
+    {
+        return $this->belongsTo(Feed::class);
+    }
+
+    public function image()
+    {
+        if (!is_null($this->image)) {
+            return $this->image;
+        } else {
+            return $this->feed->image;
+        }
+    }
 }
