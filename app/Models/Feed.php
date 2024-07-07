@@ -129,11 +129,19 @@ class Feed extends Model
 
             $subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
 
+            $description = '';
+            if (isset($item['description'])) {
+                $description = $item['description'];
+            }
+            if (is_array($description)) {
+                $description = implode(' ', $description);
+            }
+
             $data = [
                 'feed_id' => $this->id,
                 'title' => UTF8::fix_utf8((string)$item['title']),
                 'subtitle' => UTF8::fix_utf8($subtitle == '0' ? '' : $subtitle),
-                'description' => isset($item['description']) ? UTF8::fix_utf8(strip_tags((string)$item['description'])) : '',
+                'description' => UTF8::fix_utf8(strip_tags((string)$description)),
                 'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => isset($item['enclosure']['@attributes']['length']) ? (int)$item['enclosure']['@attributes']['length'] : 0,
