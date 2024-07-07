@@ -63,7 +63,7 @@ class CrawlerUrl extends Command
                     continue;
                 }
 
-                $message = '[Finish] ' . $url->url;
+                $message = '[Finish] ' . $url->url . ' | ' . $url->priority . ' | ' . date("H:i:s");
 
                 try {
                     $response = $client->get($url->url);
