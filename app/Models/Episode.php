@@ -41,10 +41,10 @@ class Episode extends Model
         return $this->belongsTo(Feed::class);
     }
 
-    public function image()
+    public function getImageAttribute()
     {
-        if (!is_null($this->image)) {
-            return $this->image;
+        if (!is_null($this->attributes['image'])) {
+            return $this->attributes['image'];
         } else {
             return $this->feed->image;
         }

@@ -173,7 +173,17 @@ class Feed extends Model
         return $this->hasMany(Episode::class)->orderBy('published_at', 'desc');
     }
 
-    public function getFollowedAttribute() {
+    public function getFollowedAttribute()
+    {
         return $this->isFollowedBy(auth()->user());
+    }
+
+    public function getImageAttribute()
+    {
+        if (!$this->attributes['image']) {
+            return url('noimage.png');
+        }
+
+        return $this->attributes['image'];
     }
 }
