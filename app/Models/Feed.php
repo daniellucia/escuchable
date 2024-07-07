@@ -137,9 +137,17 @@ class Feed extends Model
                 $description = implode(' ', $description);
             }
 
+            $title = '';
+            if (isset($item['title'])) {
+                $title = $item['title'];
+            }
+            if (is_array($title)) {
+                $title = implode(' ', $title);
+            }
+
             $data = [
                 'feed_id' => $this->id,
-                'title' => UTF8::fix_utf8((string)$item['title']),
+                'title' => UTF8::fix_utf8($title),
                 'subtitle' => UTF8::fix_utf8($subtitle == '0' ? '' : $subtitle),
                 'description' => UTF8::fix_utf8(strip_tags((string)$description)),
                 'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
