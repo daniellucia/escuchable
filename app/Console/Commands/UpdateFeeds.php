@@ -28,7 +28,7 @@ class UpdateFeeds extends Command
      */
     public function handle()
     {
-        $limit = $this->argument('limit') ?? 100;
+        $limit = $this->argument('limit') ?? 50;
 
         $start = microtime(true);
         $feeds = Feed::where('updated_at', '<', Carbon::now()->subHours(6)->toDateTimeString())->where('not_update', false)->limit($limit)->get();
