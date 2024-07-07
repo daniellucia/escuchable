@@ -115,9 +115,10 @@ class Feed extends Model
         }
 
         $count = count($channel['item']);
-        if ($this->count == $count) {
+
+        /*if ($this->count == $count) {
             return 0;
-        }
+        }*/
 
         if (isset($channel['title'])) {
             $channel['item'] = [];
