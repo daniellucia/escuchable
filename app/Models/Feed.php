@@ -136,7 +136,7 @@ class Feed extends Model
                 'description' => isset($item['description']) ? UTF8::fix_utf8(strip_tags((string)$item['description'])) : '',
                 'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
-                'duration' => (int)isset($item['enclosure']['@attributes']['length']) ? (string)$item['enclosure']['@attributes']['length'] : 0,
+                'duration' => isset($item['enclosure']['@attributes']['length']) ? (int)$item['enclosure']['@attributes']['length'] : 0,
             ];
 
             if (!$data['media_url']) {
