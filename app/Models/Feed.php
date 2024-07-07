@@ -31,6 +31,11 @@ class Feed extends Model
         'last_episode'
     ];
 
+    protected $appends = [
+        'followed',
+    ];
+
+
     /**
      * @return array
      */
@@ -166,5 +171,9 @@ class Feed extends Model
     public function episodes()
     {
         return $this->hasMany(Episode::class)->orderBy('published_at', 'desc');
+    }
+
+    public function getFollowedAttribute() {
+        return $this->isFollowedBy(auth()->user());
     }
 }

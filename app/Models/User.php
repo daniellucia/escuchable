@@ -80,7 +80,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function followed()
     {
-        return $this->followings()->with('followable')->get();
+        $followed = [];
+        foreach($this->followings as $following) {
+            $followed[] = $following->followable;
+        }
+
+        return $followed;
     }
 
     /**
