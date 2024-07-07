@@ -121,8 +121,8 @@ class Feed extends Model
         }*/
 
         if (isset($channel['title'])) {
-            $channel['item'] = [];
-            $channel['item'][] = $channel;
+            //$channel['item'] = [];
+            //$channel['item'][] = $channel;
         }
 
         foreach ($channel['item'] as $item) {
