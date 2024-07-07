@@ -133,7 +133,7 @@ class Feed extends Model
                 'feed_id' => $this->id,
                 'title' => UTF8::fix_utf8((string)$item['title']),
                 'subtitle' => UTF8::fix_utf8($subtitle == '0' ? '' : $subtitle),
-                'description' => UTF8::fix_utf8(strip_tags(isset($item['description']) ? (string)$item['description'] : '')),
+                'description' => isset($item['description']) ? UTF8::fix_utf8(strip_tags((string)$item['description'])) : '',
                 'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => (int)isset($item['enclosure']['@attributes']['length']) ? (string)$item['enclosure']['@attributes']['length'] : 0,
