@@ -96,7 +96,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return void
      */
-    public function playlist() : Collection
+    public function playlist()
     {
 
         $episodes = [];
