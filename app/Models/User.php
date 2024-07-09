@@ -83,7 +83,7 @@ class User extends Authenticatable implements JWTSubject
     public function followed()
     {
         $followed = [];
-        foreach($this->followings as $following) {
+        foreach ($this->followings as $following) {
             $followed[] = $following->followable;
         }
 
@@ -100,7 +100,7 @@ class User extends Authenticatable implements JWTSubject
 
         $episodes = [];
         $playlist = Playlist::where('user_id', $this->id)->get();
-        foreach($playlist as $playlist) {
+        foreach ($playlist as $playlist) {
             $episodes[] = $playlist->episode;
         }
 
@@ -144,11 +144,28 @@ class User extends Authenticatable implements JWTSubject
         return $this->playlist()->contains('id', $episode->id);
     }
 
-    public function update_feeds() {
-        foreach($this->followed() as $feed) {
+    public function update_feeds()
+    {
+        foreach ($this->followed() as $feed) {
             event(new FeedSaved($feed));
         }
 
         return true;
+    }
+
+    public function played(Episode $episode, int $time, bool $finished)
+    {
+        $played = EpisodePlayed::where('user_id', $this->id)->where('episode_id', $episode->id)->first();
+        if (!$played) {
+            $played = new EpisodePlayed();
+            $played->user_id = $this->id;
+            $played->episode_id = $episode->id;
+        }
+
+        $played->time = $time;
+        $played->finished = $finished ? 1 : 0;
+        $played->save();
+
+        return $played;
     }
 }

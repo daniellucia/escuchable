@@ -23,6 +23,9 @@ class Episode extends Model
         'published_at'
     ];
 
+    protected $appends = [
+        'played',
+    ];
 
     /**
      * @return array
@@ -48,5 +51,19 @@ class Episode extends Model
         } else {
             return $this->feed->image;
         }
+    }
+
+    public function getPlayedAttribute()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+
+        $played = EpisodePlayed::where('user_id', $user->id)
+            ->where('episode_id', $this->id)
+            ->first();
+
+        return $played ? true : false;
     }
 }
