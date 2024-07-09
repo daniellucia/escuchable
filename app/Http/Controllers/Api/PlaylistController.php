@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Feed;
+use App\Models\Episode;
 
 class PlaylistController extends Controller
 {
@@ -18,32 +18,40 @@ class PlaylistController extends Controller
     {
 
         $user = $request->user();
-        $feed_id = $request->feed_id;
-        if (!$feed_id || $feed_id == 0) {
+
+        if ($request->isMethod('get')) {
             return response()->json([
-                'success' => false,
-                'message' => 'Feed ID is required'
+                'success' => true,
+                'playlist' => $user->playlist()
             ]);
         }
 
-        $feed = Feed::find($feed_id);
-        if (!$feed) {
+        $episode_id = $request->episode_id;
+        if (!$episode_id || $episode_id == 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Feed not found'
+                'message' => 'Episode ID is required'
             ]);
         }
 
-        if(!$user->hasInPlaylist($feed)) {
-            $user->addToPlaylist($feed);
+        $episode = Episode::find($episode_id);
+        if (!$episode) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Episode not found'
+            ]);
+        }
+
+        if(!$user->hasInPlaylist($episode)) {
+            $user->addToPlaylist($episode);
         } else {
-            $user->removeFromPlaylist($feed);
+            $user->removeFromPlaylist($episode);
         }
 
         return response()->json([
             'success' => true,
-            'in_playlist' => $user->hasInPlaylist($feed),
-            'playlist' => $user->playlist
+            'in_playlist' => $user->hasInPlaylist($episode),
+            'playlist' => $user->playlist()
         ]);
     }
 }

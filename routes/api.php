@@ -81,6 +81,7 @@ Route::middleware('auth:api')->group(function () {
      * @method "POST"
      */
     Route::post('/playlist', PlaylistController::class)->name('playlist');
+    Route::get('/playlist', PlaylistController::class)->name('playlist');
 
     /**
      * route "/playlist"

@@ -95,43 +95,50 @@ class User extends Authenticatable implements JWTSubject
      */
     public function playlist()
     {
-        return $this->hasMany(Playlist::class);
+
+        $episodes = [];
+        $playlist = Playlist::where('user_id', $this->id)->get();
+        foreach($playlist as $playlist) {
+            $episodes[] = $playlist->episode;
+        }
+
+        return collect($episodes);
     }
 
     /**
      * Agrega un feed a la playlist del usuario
      *
-     * @param Feed $feed
+     * @param Episode $episode
      * @return void
      */
-    public function addToPlaylist(Feed $feed)
+    public function addToPlaylist(Episode $episode)
     {
-        Playlist::add($this->id, $feed->id);
+        Playlist::add($this->id, $episode->id);
 
-        return $this->playlist;
+        return $this->playlist();
     }
 
     /**
      * Elimina un feed de la playlist del usuario
      *
-     * @param Feed $feed
+     * @param Episode $episode
      * @return void
      */
-    public function removeFromPlaylist(Feed $feed)
+    public function removeFromPlaylist(Episode $episode)
     {
-        Playlist::remove($this->id, $feed->id);
+        Playlist::remove($this->id, $episode->id);
 
-        return $this->playlist;
+        return $this->playlist();
     }
 
     /**
      * Verifica si un feed está en la playlist del usuario
      *
-     * @param Feed $feed
+     * @param Episode $episode
      * @return void
      */
-    public function hasInPlaylist(Feed $feed)
+    public function hasInPlaylist(Episode $episode)
     {
-        return $this->playlist->contains('feed_id', $feed->id);
+        return $this->playlist()->contains('id', $episode->id);
     }
 }

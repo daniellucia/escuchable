@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('playlists', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('feed_id');
+            $table->integer('episode_id');
             $table->integer('order');
             $table->timestamps();
         });

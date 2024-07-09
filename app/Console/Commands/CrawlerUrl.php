@@ -39,28 +39,21 @@ class CrawlerUrl extends Command
                 $urls = [];
                 $url->update(['read' => true]);
 
-                if (strpos($url->url, 'ajx-') !== false) {
-                    continue;
-                }
-
-                if (strpos($url->url, '/perfil-') !== false) {
-                    continue;
-                }
-
-                if (strpos($url->url, '#comment') !== false) {
-                    continue;
-                }
-
-                if (strpos($url->url, '/_p2_') !== false) {
-                    continue;
-                }
-
-                if (strpos($url->url, '/usuarios-que-siguen-a-') !== false) {
-                    continue;
-                }
-
-                if (strpos($url->url, 'likes_vs_') !== false) {
-                    continue;
+                $skips = [
+                    '/perfil-',
+                    'ajx-',
+                    '#comment',
+                    '/_p2_',
+                    '/usuarios-que-siguen-a-',
+                    'likes_vs_',
+                    '/perfil-',
+                    '/ajx-',
+                    '/podcasts-'
+                ];
+                foreach ($skips as $skip) {
+                    if (strpos($url->url, $skip) !== false) {
+                        continue;
+                    }
                 }
 
                 $message = '[Finish] ' . $url->url . ' | ' . $url->priority . ' | ' . date("H:i:s");

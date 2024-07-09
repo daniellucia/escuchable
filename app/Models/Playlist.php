@@ -11,30 +11,36 @@ class Playlist extends Model
 
     protected $fillable = [
         'user_id',
-        'feed_id',
+        'episode_id',
         'order'
     ];
 
+    protected $with = ['episode'];
 
-    public static function add(int $user_id, int $feed_id)
+    public function episode()
     {
-        $playlist = self::where('user_id', $user_id)->where('feed_id', $feed_id)->first();
+        return $this->belongsTo(Episode::class);
+    }
+
+    public static function add(int $user_id, int $episode_id)
+    {
+        $playlist = self::where('user_id', $user_id)->where('episode_id', $episode_id)->first();
         if ($playlist) {
             return $playlist;
         }
 
         $playlist = new self();
         $playlist->user_id = $user_id;
-        $playlist->feed_id = $feed_id;
+        $playlist->episode_id = $episode_id;
         $playlist->order = self::where('user_id', $user_id)->max('order') + 1;
         $playlist->save();
 
         return $playlist;
     }
 
-    public static function remove(int $user_id, int $feed_id)
+    public static function remove(int $user_id, int $episode_id)
     {
-        $playlist = self::where('user_id', $user_id)->where('feed_id', $feed_id)->first();
+        $playlist = self::where('user_id', $user_id)->where('episode_id', $episode_id)->first();
         if ($playlist) {
             $playlist->delete();
         }
