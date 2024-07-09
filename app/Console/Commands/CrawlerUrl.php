@@ -39,18 +39,9 @@ class CrawlerUrl extends Command
                 $urls = [];
                 $url->update(['read' => true]);
 
-                $skips = [
-                    '/perfil-',
-                    '#comment',
-                    '/_p2_',
-                    '/usuarios-que-siguen-a-',
-                    'likes_vs_',
-                    '/perfil-',
-                    '/ajx-',
-                    '/podcasts-'
-                ];
-                foreach ($skips as $skip) {
+                foreach (explode(',', getenv('SKIP_URL_STOP_WORDS')) as $skip) {
                     if (strpos($url->url, $skip) !== false) {
+                        $this->info('[Skip] ' . $url->url . ' | ' . $url->priority . ' | ' . date("H:i:s"));
                         continue;
                     }
                 }

@@ -100,6 +100,10 @@ class Feed extends Model
     public function get_new_episodes(): int
     {
 
+        if ($this->updated_at->greaterThan(Carbon::now()->subMinutes(30))) {
+            return 0;
+        }
+
         $items = \array_from_xml($this->url);
         if ($items === false) {
             $this->not_update = true;

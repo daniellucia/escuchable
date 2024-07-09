@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Events\FeedSaved;
+use Illuminate\Database\Eloquent\Collection;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -95,7 +96,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return void
      */
-    public function playlist()
+    public function playlist() : Collection
     {
 
         $episodes = [];
