@@ -40,7 +40,7 @@ class FeedController extends Controller
         return response()->json([
             'success' => true,
             'feed' => $feed,
-            'episodes' => $feed->episodes()->paginate(10)
+            'episodes' => $feed->episodes()->paginate(30)
         ]);
     }
 }
