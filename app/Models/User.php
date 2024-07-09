@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Events\FeedSaved;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -140,5 +142,13 @@ class User extends Authenticatable implements JWTSubject
     public function hasInPlaylist(Episode $episode)
     {
         return $this->playlist()->contains('id', $episode->id);
+    }
+
+    public function update_feeds() {
+        foreach($this->followed() as $feed) {
+            event(new FeedSaved($feed));
+        }
+
+        return true;
     }
 }

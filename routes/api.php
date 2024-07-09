@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\NewReleasesController;
 use App\Http\Controllers\Api\PlaylistController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\UpdateFeedsController;
 
 /**
  * route "/register"
@@ -94,4 +95,10 @@ Route::middleware('auth:api')->group(function () {
      * @method "GET"
      */
     Route::get('/followed', FollowedController::class)->name('followed');
+
+    /**
+     * route "/update"
+     * @method "GET"
+     */
+    Route::get('/update-feeds', UpdateFeedsController::class)->name('update-feeds');
 });
