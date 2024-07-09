@@ -41,7 +41,6 @@ class CrawlerUrl extends Command
 
                 $skips = [
                     '/perfil-',
-                    'ajx-',
                     '#comment',
                     '/_p2_',
                     '/usuarios-que-siguen-a-',
