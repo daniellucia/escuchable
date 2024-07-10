@@ -20,7 +20,8 @@ class Episode extends Model
         'image',
         'media_url',
         'duration',
-        'published_at'
+        'published_at',
+        'chapters'
     ];
 
     protected $appends = [

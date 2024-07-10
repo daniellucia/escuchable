@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Storage;
+use Jackiedo\XmlArray\Xml2Array;
 
 if (!function_exists('array_from_xml')) {
     /**
@@ -14,13 +15,19 @@ if (!function_exists('array_from_xml')) {
     {
 
         try {
-            $xml = simplexml_load_file($url, "SimpleXMLElement", LIBXML_NOCDATA);
-            $json = json_encode($xml);
-            return json_decode($json, true);
+            $headers = @get_headers($url);
+
+            if ($headers && strpos($headers[0], '200')) {
+                $xml = Xml2Array::convert(file_get_contents($url))->toArray();
+                $json = json_encode($xml);
+                return json_decode($json, true);
+            } else {
+                return false;
+            }
+
         } catch (\Exception $e) {
             return false;
         }
-
     }
 }
 

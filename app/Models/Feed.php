@@ -62,15 +62,26 @@ class Feed extends Model
             throw new \Exception('Invalid feed');
         }
 
-        $channel = $feed['channel'];
-        $category = isset($channel['itunes:category']) ? (string)$channel['itunes:category']['@attributes']['text'] : false;
-        if ($category) {
-            $category = Category::obtain($category);
+        $channel = $feed['rss']['channel'];
+
+        $category = 0;
+        if (isset($channel['itunes:category'])) {
+            foreach ($channel['itunes:category'] as $category) {
+                if (isset($category['@attributes']['text'])) {
+                    $category_name = $category['@attributes']['text'];
+                    $category = $category = Category::obtain($category_name);
+                }
+            }
         }
 
         $author = isset($channel['author']) ? (string)$channel['author'] : false;
         if ($author) {
             $author = Author::obtain($author);
+        } else {
+            $author = isset($channel['itunes:author']) ? (string)$channel['itunes:author'] : false;
+            if ($author) {
+                $author = Author::obtain($author);
+            }
         }
 
         $data = [
@@ -78,10 +89,11 @@ class Feed extends Model
             'title' => UTF8::fix_utf8((string)$channel['title']),
             'language' => isset($channel['language']) ? (string)$channel['language'] : '',
             'copyright' => isset($channel['copyright']) ? (string)$channel['copyright'] : '',
-            'description' => UTF8::fix_utf8(isset($channel['description']) ? (string)$channel['description'] : ''),
+            'description' => UTF8::fix_utf8(isset($channel['description']) ? (string)$channel['description']['@cdata'] : ''),
             'image' => isset($channel['image']['url']) ?  (string)$channel['image']['url'] : '',
             'generator' => isset($channel['generator']) ? (string)$channel['generator'] : '',
-            'link' => isset($channel['image']['link']) ?  (string)$channel['image']['link'] : '',
+            //'link' => isset($channel['image']['link']) ?  (string)$channel['image']['link'] : '',
+            'link' => '',
             'visible' => true,
             'category_id' => $category->id ?? 0,
             'author_id' => $author->id ?? 0,
@@ -100,9 +112,9 @@ class Feed extends Model
     public function get_new_episodes(): int
     {
 
-        if ($this->updated_at->greaterThan(Carbon::now()->subMinutes(30))) {
-            return 0;
-        }
+        //if ($this->updated_at->greaterThan(Carbon::now()->subMinutes(30))) {
+        //return 0;
+        //}
 
         $items = \array_from_xml($this->url);
         if ($items === false) {
@@ -112,7 +124,7 @@ class Feed extends Model
             return false;
         }
 
-        $channel = $items['channel'];
+        $channel = $items['rss']['channel'];
 
         if (!isset($channel['item'])) {
             return 0;
@@ -124,14 +136,18 @@ class Feed extends Model
             return 0;
         }*/
 
-        if (isset($channel['title'])) {
-            //$channel['item'] = [];
-            //$channel['item'][] = $channel;
-        }
-
         foreach ($channel['item'] as $item) {
 
+
             $subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
+            $chapters = null;
+            if (isset($item['podcast:chapters']) && !empty($item['podcast:chapters'])) {
+                foreach ($item['podcast:chapters'] as $element) {
+                    if ($element['@attributes']['type'] == 'text/vtt') {
+                        $chapters = $element['@attributes']['url'];
+                    }
+                }
+            }
 
             $description = '';
             if (isset($item['description'])) {
@@ -157,6 +173,7 @@ class Feed extends Model
                 'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => isset($item['enclosure']['@attributes']['length']) ? (int)$item['enclosure']['@attributes']['length'] : 0,
+                'chapters' => $chapters
             ];
 
             if (!$data['media_url']) {
