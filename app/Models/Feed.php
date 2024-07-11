@@ -112,9 +112,9 @@ class Feed extends Model
     public function get_new_episodes(): int
     {
 
-        //if ($this->updated_at->greaterThan(Carbon::now()->subMinutes(30))) {
-        //return 0;
-        //}
+        if ($this->updated_at->greaterThan(Carbon::now()->subMinutes(30))) {
+            return 0;
+        }
 
         $items = \array_from_xml($this->url);
         if ($items === false) {
@@ -138,9 +138,11 @@ class Feed extends Model
 
         foreach ($channel['item'] as $item) {
 
-
-            //$subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
             $subtitle = false;
+            if (isset($item['itunes:subtitle']) && isset($item['itunes:subtitle']['@cdata'])) {
+                $subtitle =  $item['itunes:subtitle']['@cdata'];
+            }
+
             $chapters = null;
             if (isset($item['podcast:chapters']) && !empty($item['podcast:chapters'])) {
                 foreach ($item['podcast:chapters'] as $element) {
