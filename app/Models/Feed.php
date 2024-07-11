@@ -139,7 +139,8 @@ class Feed extends Model
         foreach ($channel['item'] as $item) {
 
 
-            $subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
+            //$subtitle = isset($item['itunes:subtitle']) ? (string)$item['itunes:subtitle'] : false;
+            $subtitle = false;
             $chapters = null;
             if (isset($item['podcast:chapters']) && !empty($item['podcast:chapters'])) {
                 foreach ($item['podcast:chapters'] as $element) {

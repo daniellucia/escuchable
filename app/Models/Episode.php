@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Overtrue\LaravelFavorite\Traits\Favoriteable;
+use Illuminate\Support\Facades\Storage;
+use Podlove\Webvtt\Parser;
+use Podlove\Webvtt\ParserException;
 
 class Episode extends Model
 {
@@ -43,6 +46,39 @@ class Episode extends Model
     public function feed()
     {
         return $this->belongsTo(Feed::class);
+    }
+
+    public function getChaptersAttribute()
+    {
+        if (!is_null($this->attributes['chapters'])) {
+
+            $filename = "episodes/{$this->id}.vtt";
+
+            if (Storage::exists($filename)) {
+                $content = Storage::get($filename);
+            } else {
+                $content = file_get_contents($this->attributes['chapters']);
+                if ($content) {
+                    Storage::put($filename, $content);
+                }
+            }
+
+            return $content;
+
+            $parser = new Parser();
+            $result = $parser->parse(str_replace('//', '/', preg_replace("/\n/m", '\n', $content)));
+            $chapters = [];
+            foreach($result['cues'] as $chapter) {
+                $chapters[] = [
+                    'startTime' => $chapter->start,
+                    'endTime' => $chapter->end,
+                    'title' => $chapter->title,
+                ];
+            }
+            return $chapters;
+        }
+
+        return $this->attributes['chapters'];
     }
 
     public function getImageAttribute()

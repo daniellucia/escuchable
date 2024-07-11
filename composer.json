@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.9",
         "overtrue/laravel-favorite": "^5.2",
         "overtrue/laravel-follow": "^5.2",
+        "podlove/webvtt-parser": "^1.1",
         "symfony/dom-crawler": "^7.1",
         "tymon/jwt-auth": "2.1.1",
         "voku/portable-utf8": "^6.0"
