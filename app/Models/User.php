@@ -77,7 +77,7 @@ class User extends Authenticatable implements JWTSubject
             $feeds[] = $following->followable->id;
         }
 
-        $episodes = Episode::whereIn('feed_id', $feeds)->orderBy('published_at', 'desc')->limit(30)->get();
+        $episodes = Episode::whereIn('feed_id', $feeds)->orderBy('published_at', 'desc')->limit(100)->get();
         return $episodes;
     }
 
