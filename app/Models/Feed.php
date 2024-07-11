@@ -84,12 +84,20 @@ class Feed extends Model
             }
         }
 
+        $description = '';
+
+        if (isset($channel['description']) && is_string($channel['description'])) {
+            $description = (string)$channel['description'];
+        } elseif (isset($channel['description']) && is_array($channel['description']) && isset($channel['description']['@cdata'])) {
+            $description = (string)$channel['description']['@cdata'];
+        }
+
         $data = [
             'url' => $url,
             'title' => UTF8::fix_utf8((string)$channel['title']),
             'language' => isset($channel['language']) ? (string)$channel['language'] : '',
             'copyright' => isset($channel['copyright']) ? (string)$channel['copyright'] : '',
-            'description' => UTF8::fix_utf8(isset($channel['description']) ? (string)$channel['description']['@cdata'] : ''),
+            'description' => UTF8::fix_utf8($description),
             'image' => isset($channel['image']['url']) ?  (string)$channel['image']['url'] : '',
             'generator' => isset($channel['generator']) ? (string)$channel['generator'] : '',
             //'link' => isset($channel['image']['link']) ?  (string)$channel['image']['link'] : '',
