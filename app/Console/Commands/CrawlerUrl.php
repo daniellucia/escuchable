@@ -39,11 +39,16 @@ class CrawlerUrl extends Command
                 $urls = [];
                 $url->update(['read' => true]);
 
+                $continue = false;
                 foreach (explode(',', getenv('SKIP_URL_STOP_WORDS')) as $skip) {
                     if (strpos($url->url, $skip) !== false) {
                         $this->info('[Skip] ' . $url->url . ' | ' . $url->priority . ' | ' . date("H:i:s"));
-                        continue;
+                        $continue = true;
                     }
+                }
+
+                if ($continue) {
+                    continue;
                 }
 
                 $message = '[Finish] ' . $url->url . ' | ' . $url->priority . ' | ' . date("H:i:s");
