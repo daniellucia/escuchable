@@ -39,15 +39,7 @@ class CrawlerUrl extends Command
                 $urls = [];
                 $url->update(['read' => true]);
 
-                $continue = false;
-                foreach (explode(',', getenv('SKIP_URL_STOP_WORDS')) as $skip) {
-                    if (strpos($url->url, $skip) !== false) {
-                        $this->info('[Skip] ' . $url->url . ' | ' . $url->priority . ' | ' . date("H:i:s"));
-                        $continue = true;
-                    }
-                }
-
-                if ($continue) {
+                if ($this->isSkip($url->url)) {
                     continue;
                 }
 
@@ -79,6 +71,11 @@ class CrawlerUrl extends Command
                     });
 
                     foreach ($urls as $url) {
+
+                        if ($this->isSkip($url)) {
+                            continue;
+                        }
+
                         $data = ['priority' => 0, 'url' => $url];
                         if (strpos($url, '_sq_') !== false) {
                             $data = ['priority' => 5, 'url' => $url];
@@ -109,7 +106,8 @@ class CrawlerUrl extends Command
                     }
                 }
 
-                sleep(1);
+                usleep(500);
+
                 $end = microtime(true);
                 $time = $end - $start;
                 $this->comment($message . ' | ' . date("H:i:s", $time));
@@ -117,6 +115,30 @@ class CrawlerUrl extends Command
         }
     }
 
+    private function isSkip($url)
+    {
+        $continue = false;
+        foreach (explode(',', getenv('SKIP_URL_STOP_WORDS')) as $skip) {
+            if (strpos($url, $skip) !== false) {
+                $continue = true;
+                continue;
+            }
+        }
+
+        if (strpos($url, '_sq_') !== false) {
+
+            for ($i = 2; $i <= 50; $i++) {
+                if (strpos($url, "_$i.html") !== false) {
+                    $continue = true;
+                }
+            }
+
+            $continue = true;
+
+        }
+
+        return $continue;
+    }
     private function isFeedUrl(string $url): bool
     {
         return !is_null($url) && (substr($url, -4) == '.xml' || substr($url, -4) == '.rss' || substr($url, -6) == '/feed/' || substr($url, -4) == '/rss');

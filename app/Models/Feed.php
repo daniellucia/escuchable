@@ -77,11 +77,8 @@ class Feed extends Model
         $author = isset($channel['author']) ? (string)$channel['author'] : false;
         if ($author) {
             $author = Author::obtain($author);
-        } else {
-            $author = isset($channel['itunes:author']) ? (string)$channel['itunes:author']['@cdata'] : false;
-            if ($author) {
-                $author = Author::obtain($author);
-            }
+        } elseif (isset($channel['author']) && is_array($channel['author']) && isset($channel['author']['@cdata'])) {
+            $author = Author::obtain($author);
         }
 
         $description = '';
