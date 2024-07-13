@@ -78,7 +78,7 @@ class Feed extends Model
         if ($author) {
             $author = Author::obtain($author);
         } else {
-            $author = isset($channel['itunes:author']) ? (string)$channel['itunes:author'] : false;
+            $author = isset($channel['itunes:author']) ? (string)$channel['itunes:author']['@cdata'] : false;
             if ($author) {
                 $author = Author::obtain($author);
             }
@@ -92,9 +92,16 @@ class Feed extends Model
             $description = (string)$channel['description']['@cdata'];
         }
 
+        $title = '';
+        if (isset($channel['title']) && is_string($channel['title'])) {
+            $title = (string)$channel['title'];
+        } elseif (isset($channel['title']) && is_array($channel['title']) && isset($channel['title']['@cdata'])) {
+            $title = (string)$channel['title']['@cdata'];
+        }
+
         $data = [
             'url' => $url,
-            'title' => UTF8::fix_utf8((string)$channel['title']),
+            'title' => UTF8::fix_utf8($title),
             'language' => isset($channel['language']) ? (string)$channel['language'] : '',
             'copyright' => isset($channel['copyright']) ? (string)$channel['copyright'] : '',
             'description' => UTF8::fix_utf8($description),
