@@ -36,6 +36,7 @@ class UpdateFeeds extends Command
         $bar->start();
         foreach ($feeds as $feed) {
             $feed->touch();
+            $this->comment($feed->title);
             event(new FeedSaved($feed));
             $bar->advance();
         }
