@@ -96,11 +96,20 @@ class Feed extends Model
             $title = (string)$channel['title']['@cdata'];
         }
 
+        $copyright = '';
+        if (isset($channel['copyright']) && is_string($channel['copyright'])) {
+            $copyright = (string)$channel['copyright'];
+        } elseif (isset($channel['copyright']) && is_array($channel['copyright']) && isset($channel['copyright']['@cdata'])) {
+            $copyright = (string)$channel['copyright']['@cdata'];
+        } elseif (isset($channel['copyright']) && is_string($channel['copyright'])) {
+            $copyright = (string)$channel['copyright'];
+        }
+
         $data = [
             'url' => $url,
             'title' => UTF8::fix_utf8($title),
             'language' => isset($channel['language']) ? (string)$channel['language'] : '',
-            'copyright' => isset($channel['copyright']) ? (string)$channel['copyright'] : '',
+            'copyright' => UTF8::fix_utf8($copyright),
             'description' => UTF8::fix_utf8($description),
             'image' => isset($channel['image']['url']) ?  (string)$channel['image']['url'] : '',
             'generator' => isset($channel['generator']) ? (string)$channel['generator'] : '',

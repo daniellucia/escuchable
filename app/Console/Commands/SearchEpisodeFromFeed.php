@@ -27,7 +27,7 @@ class SearchEpisodeFromFeed extends Command
     public function handle()
     {
         $url = $this->argument('url');
-        try {
+        //try {
 
             $feed = Feed::where('url', $url)->first();
             if (!$feed) {
@@ -39,8 +39,8 @@ class SearchEpisodeFromFeed extends Command
                 $this->info("{$count} found");
             }
 
-        } catch (\Exception $e) {
-            $this->error('Failed to fetch podcast feed: ' . $e->getMessage());
-        }
+        //} catch (\Exception $e) {
+        //    $this->error('Failed to fetch podcast feed: ' . $e->getMessage());
+        //}
     }
 }
