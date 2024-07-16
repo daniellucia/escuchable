@@ -227,6 +227,8 @@ class Feed extends Model
             ]
         );
 
+        $this->touch();
+
         return $count;
     }
 
