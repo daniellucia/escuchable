@@ -1,18 +1,20 @@
 <?php
 
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\EpisodeController;
 use App\Http\Controllers\Api\FeedController;
 use App\Http\Controllers\Api\FollowedController;
 use App\Http\Controllers\Api\FollowFeedController;
 use App\Http\Controllers\Api\LikeEpisodeController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\NewReleasesController;
 use App\Http\Controllers\Api\PlayedController;
 use App\Http\Controllers\Api\PlaylistController;
+use App\Http\Controllers\Api\RecommendsController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\UpdateFeedsController;
 
@@ -96,6 +98,12 @@ Route::middleware('auth:api')->group(function () {
      * @method "GET"
      */
     Route::get('/followed', FollowedController::class)->name('followed');
+
+    /**
+     * route "/recommends"
+     * @method "GET"
+     */
+    //Route::get('/recommends', RecommendsController::class)->name('recommends');
 
     /**
      * route "/update"

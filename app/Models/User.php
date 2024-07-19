@@ -85,10 +85,19 @@ class User extends Authenticatable implements JWTSubject
     {
         $followed = [];
         foreach ($this->followings as $following) {
-            $followed[] = $following->followable;
+            $followed[] = $following->followable->id;
         }
 
-        return $followed;
+        $podcasts_followed = Feed::whereIn('id', $followed)->orderBy('last_episode', 'desc')->get();
+
+        return $podcasts_followed;
+    }
+
+
+    public function recommends()
+    {
+        $recommends = Recommend::where('user_id', $this->id)->get()->pluck('feed_id')->all();
+        return Feed::whereIn('id', $recommends)->orderBy('last_episode', 'desc')->get();
     }
 
     /**

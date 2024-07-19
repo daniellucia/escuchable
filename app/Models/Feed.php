@@ -189,12 +189,20 @@ class Feed extends Model
                 $title = implode(' ', $title);
             }
 
+            $pubDate = '';
+            if (isset($item['pubDate'])) {
+                $pubDate = $item['pubDate'];
+            }
+            if (is_array($pubDate)) {
+                $pubDate = $pubDate[0];
+            }
+
             $data = [
                 'feed_id' => $this->id,
                 'title' => UTF8::fix_utf8($title),
                 'subtitle' => UTF8::fix_utf8($subtitle == '0' ? '' : $subtitle),
                 'description' => UTF8::fix_utf8(strip_tags((string)$description)),
-                'published_at' => isset($item['pubDate']) ? (new Carbon((string)$item['pubDate']))->toDateTimeString() : null,
+                'published_at' => $pubDate != '' ? (new Carbon((string)$pubDate))->toDateTimeString() : null,
                 'media_url' => isset($item['enclosure']['@attributes']['url']) ? (string)$item['enclosure']['@attributes']['url'] : '',
                 'duration' => isset($item['enclosure']['@attributes']['length']) ? (int)$item['enclosure']['@attributes']['length'] : 0,
                 'chapters' => $chapters
