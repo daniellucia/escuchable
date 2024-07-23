@@ -103,7 +103,7 @@ Route::middleware('auth:api')->group(function () {
      * route "/recommends"
      * @method "GET"
      */
-    //Route::get('/recommends', RecommendsController::class)->name('recommends');
+    Route::get('/recommends', RecommendsController::class)->name('recommends');
 
     /**
      * route "/update"

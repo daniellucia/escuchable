@@ -20,8 +20,9 @@ class FeedController extends Controller
      */
     public function __invoke(Request $request)
     {
-
+        $user = $request->user();
         $feed_id = $request->feed_id;
+
         if (!$feed_id || $feed_id == 0) {
             return response()->json([
                 'success' => false,
@@ -40,7 +41,8 @@ class FeedController extends Controller
         return response()->json([
             'success' => true,
             'feed' => $feed,
-            'episodes' => $feed->episodes()->paginate(30)
+            'episodes' => $feed->episodes()->paginate(30),
+            'recommends' => $user->recommends(),
         ]);
     }
 }

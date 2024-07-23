@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 
 class GetRecommendations extends Command
 {
@@ -35,15 +36,13 @@ class GetRecommendations extends Command
         $user = User::find($user_id);
 
         if (!$user) {
-            $this->error('User not found');
-            return;
+            return 'User not found';
         }
 
         //Obtenemos los podcasts a los que sigue
         $followed = $user->followed();
         if (empty($followed)) {
-            $this->error('User does not follow any podcast');
-            return;
+            return 'User does not follow any podcast';
         }
 
         $response[] = "Tengo una app de podcast, donde los usuarios puedes seguir a los que más le gusten.";
@@ -65,34 +64,51 @@ class GetRecommendations extends Command
         }
 
         $response[] = " ";
-        $response[] = "¿cual le recomendarias? Dame solo el listado de los id separados por comas";
+        $response[] = "¿cual le recomendarias?";
+        $response[] = "Retorna un json objeto json con dos propiedas. La primera 'IDS', que contendrá los ids de los podcasts recomendados y la segunda 'MESSAGE' que contendrá un texto con el motivo de porqué has elegido esos podcasts.";
+        $response[] = "En el mensaje, usa un lenguaje coloquial y amistoso.";
 
 
         $message = implode(PHP_EOL, $response);
 
-        try {
-            $response = $this->sendToOpenAI($message);
-            if (empty($response)) {
-                $this->error('No response from OpenAI');
-                return;
+        $repsonse = Cache::remember('openai.' . md5($message), 20, function () use ($message, $user_id) {
+            try {
+                $response = $this->sendToOpenAI($message);
+                if (empty($response)) {
+                    return 'No response from OpenAI';
+                }
+
+                if (!$this->isJson($response)) {
+                    return 'Invalid JSON response from OpenAI';
+                }
+
+                $response = json_decode($response, true);
+                $ids = array_map('intval', $response['IDS']);
+
+                Recommend::where('user_id', $user_id)->delete();
+
+                foreach ($ids as $id) {
+                    Recommend::create([
+                        'user_id' => $user_id,
+                        'feed_id' => $id,
+                    ]);
+                }
+
+                return $response;
+            } catch (\Exception $e) {
+                return $e->getMessage();
             }
+        });
 
-            $response = explode(',', $response);
-            $response = array_map('intval', $response);
+        dump($repsonse);
 
-            Recommend::where('user_id', $user_id)->delete();
-
-            foreach($response as $id) {
-                Recommend::create([
-                    'user_id' => $user_id,
-                    'feed_id' => $id,
-                ]);
-            }
-
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-        }
         return 1;
+    }
+
+    private function isJson($string)
+    {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
     }
 
     private function sendToOpenAI($message)
